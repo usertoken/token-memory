@@ -1,7 +1,7 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/usertoken/token-memory/badge.svg)](https://coveralls.io/github/usertoken/token-memory)
 [![Build Status](https://travis-ci.org/usertoken/token-memory.svg)](https://travis-ci.org/usertoken/token-memory)
-memory
+token-memory
 =========
 
 A small library that provide temporal and durable memory
@@ -31,3 +31,7 @@ A small library that provide temporal and durable memory
 ## Change Log
 
   [CHANGELOG](./CHANGELOG.md)
+
+## References
+
+  [build NPM module](https://medium.com/@jdaudier/how-to-create-and-publish-your-first-node-js-module-444e7585b738)
