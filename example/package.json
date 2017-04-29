@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "project-name": "*",
+    "token-memory": "^0.0.1"
+  }
+}

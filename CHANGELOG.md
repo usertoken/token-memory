@@ -11,3 +11,4 @@
 0.0.4           coverage-travis-badge
 0.0.5           fixing-travis-badge
 0.0.6           update-changelog
+v0.0.7          Version 0.0.7 - add sweet badges
