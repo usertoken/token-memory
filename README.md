@@ -24,3 +24,7 @@ A small library that provide temporal and durable memory
 ## Contributing
 
   [CONTRIBUTING](./CONTRIBUTING.md)
+
+## Change Log
+
+  [CHANGELOG](./CHANGELOG.md)
