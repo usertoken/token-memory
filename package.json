@@ -1,0 +1,38 @@
+{
+  "name": "token-memory",
+  "version": "0.0.1",
+  "description": "temporal and durable memory as a module https://ut.usertoken.com/memory",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "test-cat": "mocha --reporter nyan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/usertoken/token-memory.git"
+  },
+  "engines": {
+    "node": ">=4.2.0",
+    "npm": ">=4.2.0"
+  },
+  "keywords": [
+    "memory",
+    "nodejs",
+    "browser",
+    "react-native",
+    "react",
+    "grapql",
+    "rest",
+    "api"
+  ],
+  "author": "UserToken Admin <admin@usertoken.com> (https://www.usertoken.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/usertoken/token-memory/issues"
+  },
+  "homepage": "https://github.com/usertoken/token-memory#readme",
+  "devDependencies": {
+    "chai": ">=3.5.0",
+    "mocha": ">=3.3.0"
+  }
+}
