@@ -1,6 +1,6 @@
 {
   "name": "token-memory",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "temporal and durable memory as a module https://ut.usertoken.com/memory",
   "main": "index.js",
   "scripts": {
