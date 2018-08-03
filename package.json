@@ -1,6 +1,6 @@
 {
   "name": "token-memory",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "temporal and durable memory as a module https://ut.usertoken.com/memory",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "url": "git+https://github.com/usertoken/token-memory.git"
   },
   "engines": {
-    "node": ">=4.2.0",
+    "node": ">=6.13.0",
     "npm": ">=4.2.0"
   },
   "keywords": [
@@ -38,9 +38,9 @@
   },
   "homepage": "https://github.com/usertoken/token-memory#readme",
   "devDependencies": {
-    "chai": ">=3.5.0",
-    "coveralls": "^2.13.1",
-    "istanbul": "^0.4.5",
-    "mocha": ">=3.3.0"
+    "chai": "4.1.2",
+    "coveralls": "3.0.2",
+    "istanbul": "0.4.5",
+    "mocha": "5.2.0"
   }
 }
