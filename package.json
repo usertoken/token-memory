@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run test:spec && npm run test:cat && npm run test:cover",
-    "test:spec": "node_modules/.bin/mocha --reporter spec",
+    "test:spec": "./node_modules/.bin/mocha --reporter spec",
     "test:cat": "mocha --reporter nyan",
-    "test:cover": "node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*",
+    "test:cover": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*",
     "cover": "npm run coverity:build && npm run coverity:compact && npm run coverity:upload",
-    "coverity:build": "cov-build --dir cov-int --no-command --fs-capture-search ./",
+    "coverity:build": "./node_modules/coveralls/bin/coveralls.js --dir cov-int --no-command --fs-capture-search ./",
     "coverity:compact": "tar zcf token-memory.tgz cov-int",
     "coverity:upload": "./scripts/coverity-submit"
   },
