@@ -8,7 +8,7 @@
     "test:spec": "node_modules/.bin/mocha --reporter spec",
     "test:cat": "mocha --reporter nyan",
     "test:cover": "node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*",
-    "coverity": "npm run coverity:build && npm run coverity:compact && npm run coverity:upload",
+    "cover": "npm run coverity:build && npm run coverity:compact && npm run coverity:upload",
     "coverity:build": "cov-build --dir cov-int --no-command --fs-capture-search ./",
     "coverity:compact": "tar zcf token-memory.tgz cov-int",
     "coverity:upload": "./scripts/coverity-submit"
@@ -18,18 +18,25 @@
     "url": "git+https://github.com/usertoken/token-memory.git"
   },
   "engines": {
-    "node": ">=6.13.0",
-    "npm": ">=4.2.0"
+    "node": ">=8.11.4",
+    "npm": ">=6.4.1"
   },
+  "browserslist": [
+    ">1%",
+    "last 4 versions",
+    "Firefox ESR",
+    "not ie < 9"
+  ],
   "keywords": [
     "memory",
     "nodejs",
     "browser",
     "react-native",
     "react",
+    "storage",
     "grapql",
-    "rest",
-    "api"
+    "blockchain",
+    "usertoken"
   ],
   "author": "UserToken Admin <admin@usertoken.com> (https://www.usertoken.com)",
   "license": "MIT",
@@ -38,7 +45,7 @@
   },
   "homepage": "https://github.com/usertoken/token-memory#readme",
   "devDependencies": {
-    "chai": "4.1.2",
+    "chai": "4.2.0",
     "coveralls": "3.0.2",
     "istanbul": "0.4.5",
     "mocha": "5.2.0"
