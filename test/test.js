@@ -23,7 +23,7 @@ describe('#tokenMemory', function() {
         var chainID = 1234567
         var result = Chain(chainID);
         var answerChain = tokenMemory.get(chainID+'/answer')
-        answerChain.get('chain').on(function(data, key){
+        answerChain.get('chain').once(function(data, key){
             return expect(data).to.equal(chainID);
         });
     });
@@ -33,7 +33,7 @@ describe('#tokenMemory', function() {
         var chainID = 12345678
         var result = Chain(chainID);
         var contractChain = tokenMemory.get(chainID)
-        contractChain.get('chain').on(function(data, key){
+        contractChain.get('chain').once(function(data, key){
             return expect(data).to.equal(chainID);
         });
     });
