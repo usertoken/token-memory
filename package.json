@@ -18,8 +18,8 @@
     "url": "git+https://github.com/usertoken/token-memory.git"
   },
   "engines": {
-    "node": ">=8.11.4",
-    "npm": ">=6.4.1"
+    "node": "8.11.4",
+    "npm": "6.4.1"
   },
   "browserslist": [
     ">1%",
