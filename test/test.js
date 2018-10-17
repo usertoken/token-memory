@@ -5,38 +5,38 @@ require('gun/lib/path.js');
 require('gun-unset');
 
 var expect = require('chai').expect;
-var tokenMemory = require('../index');
+var Chain = require('../index');
 
 var peers = ['troposphere.usertoken.com']
-var globalChain = Gun({
+var tokenMemory = Gun({
     peers: peers,
     radisk: false,
-    file: false
+    // file: 'radata'
 })
 
-
-
-tokenMemory(1);
 ////////
 describe('#tokenMemory', function() {
-    it('should convert single digits and have answer in answerChain', function() {
-        // var contractChain = globalChain.get(contractID)
+    it('should have answer in answerChain', function() {
+        // var contractChain = tokenMemory.get(contractID)
         // var answerChain = result.answerChain
         // var contractChain = result.contractChain
-
-        var answerChain = globalChain.get('1/answer')
-        answerChain.get('answer').on(function(data, key){
-            expect(data).to.equal('1');
+        var chainID = 1234567
+        var result = Chain(chainID);
+        var answerChain = tokenMemory.get(chainID+'/answer')
+        answerChain.get('chain').on(function(data, key){
+            return expect(data).to.equal(chainID);
         });
     });
 
-    it('should convert single digits and have contractID in contractChain', function() {
+    it('should have contractID in contractChain', function() {
         // var answerChain = result.answerChain
-
-        var contractChain = globalChain.get('1')
-        contractChain.get('contractID').on(function(data, key){
-            expect(data).to.equal('1');
+        var chainID = 12345678
+        var result = Chain(chainID);
+        var contractChain = tokenMemory.get(chainID)
+        contractChain.get('chain').on(function(data, key){
+            return expect(data).to.equal(chainID);
         });
     });
+    return
 });
 ////////

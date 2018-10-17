@@ -1,14 +1,15 @@
 {
   "name": "token-memory",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "temporal and durable memory as a module https://ut.usertoken.com/memory",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test:spec && npm run test:cat && npm run test:cover",
+    "test": "npm run test:spec",
     "test:spec": "./node_modules/.bin/mocha --reporter spec",
-    "test:cat": "mocha --reporter nyan",
-    "test:cover": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*",
-    "cover": "npm run coverity:build && npm run coverity:compact && npm run coverity:upload",
+    "test:cat": "./node_modules/.bin/mocha --reporter nyan",
+    "cover": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*",
+    "postcover": "cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js",
+    "coverity": "npm run coverity:build && npm run coverity:compact && npm run coverity:upload",
     "coverity:build": "./node_modules/coveralls/bin/coveralls.js --dir cov-int --no-command --fs-capture-search ./",
     "coverity:compact": "tar zcf token-memory.tgz cov-int",
     "coverity:upload": "./scripts/coverity-submit"
