@@ -14,26 +14,27 @@ A small library that provide temporal and durable memory
 
     "use strict";
 
-    var UUIDv1 = require("uuid/v1")();
     var Token = require("token-memory");
+    var tokenID = require("uuid/v1")();
 
-    var chains = Token(UUIDv1);
-    var { chain } = chains;
-    var testChain = chain.get("tests");
-    testChain.put(chain);
-    testChain.once((data, key) => {
-      return data === UUIDv1;
+    var token = Token(tokenID);
+    var testChain = token.get("TESTCHAIN");
+    testChain.put(tokenID);
+    testChain.once((savedTokenID, indexKey) => {
+      console.log( new Date(), ' : ', tokenID, ' :saved: ', tokenID === savedTokenID);
     });
 
 
 ## Tests
 
   `npm test`
+
   `npm run test-cat`
 
 ## Publish
 
   `npm login`   # [usertoken](https://www.npmjs.com/~usertoken) npm account
+
   `npm publish` # [token-memory](https://www.npmjs.com/package/token-memory) package
 
 ## Contributing

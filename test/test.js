@@ -1,18 +1,18 @@
 "use strict";
 
-var UUIDv1 = require("uuid/v1")();
+var tokenID = require("uuid/v1")();
 var expect = require("chai").expect;
 var Token = require("../index");
 
 ////////
 describe("#chainFunctions", () => {
-  it(`should have create new chain : ${UUIDv1}`, () => {
-    var chains = Token(UUIDv1);
-    var { chain } = chains;
-    var testChain = chain.get("tests");
-    testChain.put(chain);
-    testChain.once((data, key) => {
-      return expect(data).to.equal(UUIDv1);
+  it(`should have create new chain : ${tokenID}`, () => {
+    var token = Token(tokenID);
+    var testChain = token.get("TESTCHAIN");
+    testChain.put(tokenID);
+    testChain.once((savedTokenID, indexKey) => {
+      // console.log(' CHAIN : TESTCHAIN \n', tokenID, ' :saved: ', tokenID === saveTokenID);
+      return expect(savedTokenID).to.equal(tokenID);
     });
   });
 });

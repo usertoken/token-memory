@@ -1,15 +1,16 @@
 "use strict";
 
 var Token = require("./lib/token");
+var Chains = require('./lib/chains')
 /**
- * Blockchain Contract for CRUD on memories
- * @param {string} chain
+ * Create a new link and returns a json to existing chains with link
+ * @param {string} id
+ * @param {json} options
  * @return {json}
  */
 
-module.exports = function(chain) {
-  var chains = Token.create(chain);
-  //   var { chain } = chains;
-  //   chain.get("tests").put(chain);
-  return chains;
+module.exports = function(id, options) {
+  var chains = Chains.configs(options);
+  var token = Token.create(id, chains);
+  return token;
 };
