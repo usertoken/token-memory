@@ -24,6 +24,11 @@ A small library that provide temporal and durable memory
   `npm test`
   `npm run test-cat`
 
+## Publish
+
+  `npm login`   # [usertoken](https://www.npmjs.com/~usertoken) npm account
+  `npm publish` # [token-memory](https://www.npmjs.com/package/token-memory) package
+
 ## Contributing
 
   [CONTRIBUTING](./CONTRIBUTING.md)
