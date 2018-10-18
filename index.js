@@ -5,55 +5,48 @@ var Gun = require("gun/gun");
 require("gun/lib/path.js");
 require('gun/lib/store');
 
-/**
- * chainConfigs - returns global chains
- * @param {json} options
- * @return {json}
- */
+var ROOT_SEED = "troposphere.usertoken.com";
+var PEERS = [ROOT_SEED];
+var DEFAULT_URL = `https://${ROOT_SEED}/tokens`;
+var DATA_LOCATION = "chainsdata";
 
-function chainConfigs(options) {
-  var TOKEN_CHAIN = "USERTOKEN";
-  var ATTRIBUTES_CHAIN = "ATTRIBUTES";
-  var STORAGE_CHAIN = "STORAGE";
-  var CHANNELS_CHAIN = "CHANNELS";
-  var DATA_LOCATION = "chainsdata";
-  var PEERS = ["troposphere.usertoken.com"];
+var TOKEN_CHAIN = "USERTOKEN";
+var ATTRIBUTES_CHAIN = "ATTRIBUTES";
+var STORAGE_CHAIN = "STORAGE";
+var CHANNELS_CHAIN = "CHANNELS";
 
-  var configs = {
-    TOKEN_CHAIN : options && options.TOKEN_CHAIN? options.TOKEN_CHAIN : TOKEN_CHAIN,
-    ATTRIBUTES_CHAIN : options && options.ATTRIBUTES_CHAIN? options.ATTRIBUTES_CHAIN : ATTRIBUTES_CHAIN,
-    STORAGE_CHAIN : options && options.STORAGE_CHAIN? options.STORAGE_CHAIN : STORAGE_CHAIN,
-    CHANNELS_CHAIN : options && options.CHANNELS_CHAIN? options.CHANNELS_CHAIN : CHANNELS_CHAIN,
-    PEERS : options && options.PEERS? options.PEERS : PEERS,
-    ENGINE : options && options.ENGINE? options.ENGINE : {
-      peers: PEERS,
-      radisk: true,
-      file: DATA_LOCATION
-    }
-  };
-  return configs;
+var tokenConfigs = {
+  TOKEN_CHAIN,
+  ATTRIBUTES_CHAIN,
+  STORAGE_CHAIN,
+  CHANNELS_CHAIN,
+  PEERS : PEERS,
+  ENGINE : {
+    peers: PEERS,
+    radisk: true,
+    file: DATA_LOCATION
+  }
 };
 
 /**
- * createToken - Add a token to global chains
+ * Add a token to global chains
  * @param {string} id
- * @param {json} options
- * @return {[link,{json}]}
+ * @param {json} configs
+ * @return {json}
  */
 
-function createToken(id, options) {
+module.exports = function(id, configs) {
+  var options = configs? configs : tokenConfigs;
   var tokenEngine = Gun(options.ENGINE);
-  
-  var DEFAULT_URL = 'https://troposphere.usertoken.com/tokens/';
-  var ROOT_URL = options.ENGINE && options.ENGINE.peers && options.ENGINE.peers[0]? 
-  `${options.ENGINE.peers[0]}/tokens/${id}` : `${DEFAULT_URL}/${id}`;
-
   // create new chains
-  var id_Attributes = UUIDv5(`${ROOT_URL}/attributes`,UUIDv5.URL);
-  var id_Storage = UUIDv5(`${ROOT_URL}/storage`,UUIDv5.URL);
-  var id_Channels = UUIDv5(`${ROOT_URL}/channels`,UUIDv5.URL);
+  var ROOT_URL = `${DEFAULT_URL}/${id.toLowerCase()}`;
+  var id_Attributes = UUIDv5(`${ROOT_URL}/${ATTRIBUTES_CHAIN.toLowerCase()}`,UUIDv5.URL);
+  var id_Storage = UUIDv5(`${ROOT_URL}/${STORAGE_CHAIN.toLowerCase()}`,UUIDv5.URL);
+  var id_Channels = UUIDv5(`${ROOT_URL}/${CHANNELS_CHAIN.toLowerCase()}`,UUIDv5.URL);
 
-  var token = tokenEngine.get(id);
+  // console.log('\n ids : ',ROOT_URL, '\n', id_Attributes, '\n', id_Storage, '\n', id_Channels)
+
+  var token = tokenEngine.get(id.toLowerCase());
   var attributes = tokenEngine.get(id_Attributes);
   var storage = tokenEngine.get(id_Storage);
   var channels = tokenEngine.get(id_Channels);
@@ -81,19 +74,5 @@ function createToken(id, options) {
   token.path(options.STORAGE_CHAIN).set(storageGenesisLink); // Tn <- STORAGE_CHAIN[S0]
   token.path(options.CHANNELS_CHAIN).set(channelsGenesisLink); // Tn <- CHANNELS_CHAIN[C0]
 
-
-  return token;
-};
-
-/**
- * Create a new link and returns a json to existing chains with link
- * @param {string} id
- * @param {json} options
- * @return {json}
- */
-
-module.exports = function(id, options) {
-  var configs = chainConfigs(options);
-  var token = createToken(id, configs);
   return token;
 };

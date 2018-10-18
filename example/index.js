@@ -1,13 +1,26 @@
 "use strict";
 
 var tokenID = require("uuid/v1")();
-// var expect = require("chai").expect;
 var Token = require("token-memory");
 
-var token = Token(tokenID);
-var testChain = token.get("TESTCHAIN");
-testChain.put(tokenID);
-testChain.once((savedTokenID, indexKey) => {
-  console.log(' CHAIN : TESTCHAIN \n', tokenID, ' :saved: ', tokenID === saveTokenID);
-  // return expect(savedTokenID).to.equal(tokenID);
-});
+function newToken(id) {
+  var token = Token(id);
+  var testChain = token.get("TESTCHAIN").get('ID');
+  testChain.put(id);
+  testChain.val((savedTokenID, indexKey) => {
+    console.log( '\n newToken() : ', savedTokenID, '\n KEY : ', indexKey, '\n SAVED : ', id === savedTokenID);
+  });
+}
+
+
+// needs SEED relay
+function getToken(id) {
+  var token = Token(id);
+  var testChain = token.get("TESTCHAIN").get('ID');
+  testChain.val((savedTokenID, indexKey) => {
+    console.log( '\n getToken() : ', savedTokenID, '\n KEY : ', indexKey, '\n SAVED : ', id === savedTokenID);
+  });
+}
+
+newToken(tokenID);
+// getToken(tokenID);
