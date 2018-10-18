@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "gun": "0.9.99997",
-    "gun-unset": "1.0.1"
+    "gun-unset": "1.0.1",
+    "uuid": "3.3.2"
   }
 }
