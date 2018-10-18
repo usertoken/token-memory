@@ -12,15 +12,4 @@ function newToken(id) {
   });
 }
 
-
-// needs SEED relay
-function getToken(id) {
-  var token = Token(id);
-  var testChain = token.get("TESTCHAIN").get('ID');
-  testChain.val((savedTokenID, indexKey) => {
-    console.log( '\n getToken() : ', savedTokenID, '\n KEY : ', indexKey, '\n SAVED : ', id === savedTokenID);
-  });
-}
-
 newToken(tokenID);
-// getToken(tokenID);
