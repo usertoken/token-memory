@@ -44,8 +44,6 @@ module.exports = function(id, configs) {
   var id_Storage = UUIDv5(`${ROOT_URL}/${STORAGE_CHAIN.toLowerCase()}`,UUIDv5.URL);
   var id_Channels = UUIDv5(`${ROOT_URL}/${CHANNELS_CHAIN.toLowerCase()}`,UUIDv5.URL);
 
-  // console.log('\n ids : ',ROOT_URL, '\n', id_Attributes, '\n', id_Storage, '\n', id_Channels)
-
   var token = tokenEngine.get(id.toLowerCase());
   var attributes = tokenEngine.get(id_Attributes);
   var storage = tokenEngine.get(id_Storage);

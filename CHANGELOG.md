@@ -14,4 +14,5 @@
 0.0.9           https://scan.coverity.com
 0.1.0           blockchain
 0.1.1           link-in-a-chain
-
+0.1.2           index.js
+0.1.3           token-v0
