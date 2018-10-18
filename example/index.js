@@ -1,5 +1,13 @@
-var numFormmater = require('token-memory');
+"use strict";
 
-var formattedNum = numFormmater(234324234);
+var tokenID = require("uuid/v1")();
+// var expect = require("chai").expect;
+var Token = require("token-memory");
 
-console.log(formattedNum);
+var token = Token(tokenID);
+var testChain = token.get("TESTCHAIN");
+testChain.put(tokenID);
+testChain.once((savedTokenID, indexKey) => {
+  console.log(' CHAIN : TESTCHAIN \n', tokenID, ' :saved: ', tokenID === saveTokenID);
+  // return expect(savedTokenID).to.equal(tokenID);
+});

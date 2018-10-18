@@ -1,6 +1,17 @@
 {
+  "name": "example",
+  "version": "1.0.0",
+  "description": "[![Coverage Status](https://coveralls.io/repos/github/usertoken/token-memory/badge.svg)](https://coveralls.io/github/usertoken/token-memory) [![Build Status](https://travis-ci.org/usertoken/token-memory.svg)](https://travis-ci.org/usertoken/token-memory) memory example =========",
+  "main": "index.js",
   "dependencies": {
-    "project-name": "*",
-    "token-memory": "^0.0.1"
-  }
+    "token-memory": "*",
+    "uuid": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "UserToken Admin <admin@usertoken.com> (https://www.usertoken.com)",
+  "license": "ISC"
 }
