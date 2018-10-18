@@ -12,12 +12,19 @@ A small library that provide temporal and durable memory
 
 ## Usage
 
-    var Memory = require('token-memory');
+    "use strict";
 
-    var token = new Memory(config);
+    var UUIDv1 = require("uuid/v1")();
+    var Token = require("token-memory");
 
-    token.put({token: 'aaa111222', name: 'Usertoken Admin'})
-    token.get({token: 'aaa111222'});
+    var chains = Token(UUIDv1);
+    var { chain } = chains;
+    var testChain = chain.get("tests");
+    testChain.put(chain);
+    testChain.once((data, key) => {
+      return data === UUIDv1;
+    });
+
 
 ## Tests
 
