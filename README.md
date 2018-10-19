@@ -10,12 +10,12 @@ A small library that provides durable tokens
 
   `npm install --save token-memory`
 
-## Usage
+## Usage [Example](example/README.md)
 
     "use strict";
 
     var Token = require("token-memory");
-    var tokenID = require("uuid/v1")();
+    var tokenID = '1bf52190-d334-11e8-84cf-716b1aea4548';
 
     var token = Token(tokenID);
     var testChain = token.get("TESTCHAIN");
@@ -28,8 +28,6 @@ A small library that provides durable tokens
 ## Tests
 
   `npm test`
-
-  `npm run test-cat`
 
 ## Publish
 

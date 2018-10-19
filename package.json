@@ -1,10 +1,10 @@
 {
   "name": "token-memory",
-  "version": "0.1.3",
-  "description": "temporal and durable memory as a module https://ut.usertoken.com/memory",
+  "version": "0.1.5",
+  "description": "Durable memory as token module https://ut.usertoken.com/token-memory",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test:spec",
+    "test": "npm run test:spec && npm run test:cat",
     "test:spec": "./node_modules/.bin/mocha --reporter spec",
     "test:cat": "./node_modules/.bin/mocha --reporter nyan",
     "cover": "./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec test/*",
@@ -29,7 +29,7 @@
     "not ie < 9"
   ],
   "keywords": [
-    "memory",
+    "token-memory",
     "nodejs",
     "browser",
     "react-native",

@@ -16,3 +16,5 @@
 0.1.1           link-in-a-chain
 0.1.2           index.js
 0.1.3           token-v0
+0.1.4           update-readme
+0.1.5           readme-remove-uuid-depends
