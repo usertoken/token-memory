@@ -4,7 +4,7 @@ token-memory
 [![Coverity Status](https://scan.coverity.com/projects/16405/badge.svg)](https://scan.coverity.com/projects/token-memory)
 =========
 
-A small library that provide temporal and durable memory
+A small library that provides durable tokens
 
 ## Installation
 
@@ -20,8 +20,8 @@ A small library that provide temporal and durable memory
     var token = Token(tokenID);
     var testChain = token.get("TESTCHAIN");
     testChain.put(tokenID);
-    testChain.once((savedTokenID, indexKey) => {
-      console.log( new Date(), ' : ', tokenID, ' :saved: ', tokenID === savedTokenID);
+    testChain.val((savedTokenID, indexKey) => {
+      console.log('\n INDEX : ', indexKey, '\n TOKEN : ', savedTokenID, '\n MATCHED : ', tokenID === savedTokenID);
     });
 
 

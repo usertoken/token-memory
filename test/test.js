@@ -21,7 +21,6 @@ describe("#chainFunctions", function() {
   it(`should have found created token : ${tokenID1}`, function() {
     token1 = Token(tokenID1);
     var testChain = token1.get("TESTCHAIN").get('ID');
-    // testChain.put(tokenID1);
     testChain.val((savedTokenID, indexKey) => {
       // console.log(' CHAIN : ', indexKey, '\n', savedTokenID, ' :saved: ', tokenID1 === savedTokenID);
       return expect(savedTokenID).to.equal(savedTokenID1);
@@ -30,7 +29,6 @@ describe("#chainFunctions", function() {
   it(`should find same token from new token: ${tokenID1} <-[TESTCHAIN]-> ${tokenID2}`, function() {
     var token2 = Token(tokenID2);
     var testChain = token2.get("TESTCHAIN").get('ID');
-    // testChain.put(tokenID2);
     testChain.val((savedTokenID, indexKey) => {
       // console.log(' CHAIN : ', indexKey, '\n', tokenID1, tokenID2, savedTokenID, ' :saved: ', tokenID1 === savedTokenID);
       return expect(savedTokenID).to.equal(savedTokenID1);
