@@ -10,7 +10,7 @@ A small library that provides durable tokens
 
   `npm install --save token-memory`
 
-## Usage [Example](example/README.md)
+## Usage [Example](example)
 
     "use strict";
 
