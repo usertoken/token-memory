@@ -12,17 +12,24 @@ A small library that provides durable memories
 
 ## Usage [Example](example)
 
-    "use strict";
+  "use strict";
 
-    var Token = require("token-memory");
-    var tokenID = '1bf52190-d334-11e8-84cf-716b1aea4548';
+  var Token = require("token-memory");
 
-    var token = Token(tokenID);
-    var testChain = token.get("TESTCHAIN");
-    testChain.put(tokenID);
-    testChain.val((savedTokenID, indexKey) => {
-      console.log('\n INDEX : ', indexKey, '\n TOKEN : ', savedTokenID, '\n MATCHED : ', tokenID === savedTokenID);
+  function newToken() {
+    Token(({token, id}) => {
+      token.get('id').once(idFound => {
+          console.log('id: ', id, ' idFound: ', idFound, ' online: ', id === idFound)
+          var testChain = token.get("TESTCHAIN").get('id');
+          testChain.put(id);
+          testChain.once((savedTokenID, indexKey) => {
+            console.log( '\n newToken() : ', savedTokenID, '\n KEY : ', indexKey, '\n SAVED : ', id === savedTokenID);
+          });
+      })
     });
+  }
+
+  newToken();
 
 
 ## Tests
