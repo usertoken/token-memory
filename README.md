@@ -12,6 +12,7 @@ A small library that provides durable memories
 
 ## Usage [Example](example)
 
+```js
   "use strict";
 
   var Token = require("token-memory");
@@ -30,7 +31,7 @@ A small library that provides durable memories
   }
 
   newToken();
-
+```
 
 ## Tests
 
