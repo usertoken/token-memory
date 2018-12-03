@@ -1,19 +1,33 @@
 "use strict";
 
+var Random = require('random-js');
+var siphash24 = require('siphash24');
+var SafeBuffer = require('safe-buffer');
 var UUIDv5 = require('uuid/v5');
-var Gun = require("gun/gun");
-require("gun/lib/path.js");
+var Gun = require('gun/gun');
+
+require('gun/nts');
+require('gun/lib/not.js');
+require('gun/lib/path.js');
 require('gun/lib/store');
 
+
+var requestCounter, siphash24Input, entropy;
+var array = [];
+var ID = UUIDv5();
+const randomSeed = ID.replace(/\-/g, '');
+var Buffer = SafeBuffer.Buffer;
 var ROOT_SEED = "troposphere.usertoken.com";
 var PEERS = [ROOT_SEED];
 var DEFAULT_URL = `https://${ROOT_SEED}/tokens`;
-var DATA_LOCATION = "chainsdata";
+var DATA_LOCATION = "tokensdata";
 
 var TOKEN_CHAIN = "USERTOKEN";
 var ATTRIBUTES_CHAIN = "ATTRIBUTES";
 var STORAGE_CHAIN = "STORAGE";
 var CHANNELS_CHAIN = "CHANNELS";
+var CHANNELS_AMOUNT = "CHANNELS/AMOUNT";
+var CHANNELS_REGISTRATION = "CHANNELS/REGISTRATION";
 
 var tokenConfigs = {
   TOKEN_CHAIN,
@@ -35,14 +49,19 @@ var tokenConfigs = {
  * @return {json}
  */
 
-module.exports = function(id, configs) {
+module.exports = function(myID, configs) {
   var options = configs? configs : tokenConfigs;
+  var id = myID? myID : ID;
   var tokenEngine = Gun(options.ENGINE);
+
   // create new chains
   var ROOT_URL = `${DEFAULT_URL}/${id.toLowerCase()}`;
   var id_Attributes = UUIDv5(`${ROOT_URL}/${ATTRIBUTES_CHAIN.toLowerCase()}`,UUIDv5.URL);
   var id_Storage = UUIDv5(`${ROOT_URL}/${STORAGE_CHAIN.toLowerCase()}`,UUIDv5.URL);
   var id_Channels = UUIDv5(`${ROOT_URL}/${CHANNELS_CHAIN.toLowerCase()}`,UUIDv5.URL);
+
+  var AMOUNT = UUIDv5(`${ROOT_URL}/${CHANNELS_AMOUNT.toLowerCase()}`,UUIDv5.URL);
+  var REGISTRATION = UUIDv5(`${ROOT_URL}/${CHANNELS_REGISTRATION.toLowerCase()}`,UUIDv5.URL);
 
   var token = tokenEngine.get(id.toLowerCase());
   var attributes = tokenEngine.get(id_Attributes);
@@ -72,5 +91,26 @@ module.exports = function(id, configs) {
   token.path(options.STORAGE_CHAIN).set(storageGenesisLink); // Tn <- STORAGE_CHAIN[S0]
   token.path(options.CHANNELS_CHAIN).set(channelsGenesisLink); // Tn <- CHANNELS_CHAIN[C0]
 
+  // registration
+  AMOUNT.get('entropy').once((e,label) => {
+    if (e) { entropy = e}
+      else {
+      entropy = siphash24(
+        Buffer.from(requestCounter),
+        Buffer.from(ID),
+      ).toString(16)
+    }
+  })
+  AMOUNT.get('members').once((total,label) => {
+    requestCounter = total? total : ++requestCounter;
+    siphash24Input = [ requestCounter, entropy, ];
+    entropy = siphash24(
+      Buffer.from(siphash24Input),
+      Buffer.from(ID),
+    ).toString(16);
+  })
+
+  AMOUNT.get('entropy').put(entropy)
+  if (requestCounter) AMOUNT.get('members').put(requestCounter)
   return token;
 };
