@@ -4,7 +4,7 @@ token-memory
 [![Coverity Status](https://scan.coverity.com/projects/16405/badge.svg)](https://scan.coverity.com/projects/token-memory)
 =========
 
-A small library that provides durable tokens
+A small library that provides durable memories
 
 ## Installation
 
