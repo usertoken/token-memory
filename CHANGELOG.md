@@ -18,3 +18,6 @@
 0.1.3           token-v0
 0.1.4           update-readme
 0.1.5           readme-remove-uuid-depends
+0.1.6           amount-total-on-chain
+0.1.7           register-token-get-doorkey
+0.1.8           using-callback
