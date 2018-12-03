@@ -1,6 +1,6 @@
 {
   "name": "token-memory",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Durable memory as token module https://ut.usertoken.com/token-memory",
   "main": "index.js",
   "scripts": {
@@ -53,9 +53,6 @@
   },
   "dependencies": {
     "gun": "0.9.99999",
-    "random-js": "^1.0.8",
-    "safe-buffer": "^5.1.2",
-    "siphash24": "^1.1.1",
     "uuid": "3.3.2"
   }
 }
