@@ -6,94 +6,88 @@ var Gun = require('gun/gun');
 require('gun/nts');
 require('gun/lib/path.js');
 
-var ID = UUIDv4().replace(/\//g, '').replace(/\-/g, '').replace(/\ /g, '').toLowerCase();
-var SEED = ID.toUpperCase();
-var ROOT = "ROOT";
 var PEERS = ['https://troposphere.usertoken.com/gun', 'https://alex.us-east.mybluemix.net/gun', 'https://haley.mybluemix.net/gun'];
-var DEV_PEER = ['https://gunjs.herokuapp.com/gun'];
 
-var HUB = "USERTOKEN";
+var ROOT = "/";
+var BROADCAST = "BROADCAST";
 
-var HUB_CHANNELS_REQUEST = "USERTOKEN/CHANNELS/REQUEST";
-var HUB_CHANNELS_RESPONSE = `USERTOKEN/CHANNELS/${SEED}`; // UPPERCASE -> global messages
+var GENESIS = "USERTOKEN";
+var GENESIS_ATTRIBUTES = "USERTOKEN/ATTRIBUTES";
+var GENESIS_CONTRACTS = "USERTOKEN/CONTRACTS";
+var GENESIS_CHANNELS = "USERTOKEN/CHANNELS";
 
-var ATTRIBUTES = {
-  HUB_ATTRIBUTES: "USERTOKEN/ATTRIBUTES",
-  HUB_STORAGE: "USERTOKEN/STORAGE",
-  HUB_CHANNELS: "USERTOKEN/CHANNELS"
-};
-
-var gunOptions = {
-  peers: PEERS || DEV_PEER,
-  file: false
-};
-
-var tokenEngine = Gun(gunOptions);
-var token = tokenEngine.get(ID);
-var REQUESTS = tokenEngine.get(HUB_CHANNELS_REQUEST);
-var RESPONSES = tokenEngine.get(HUB_CHANNELS_RESPONSE);
 
 /**
- * Add a token to global chains
- * @param {function} cb
+ * Create a new token or connect to existing by providing OPTIONS = { id: id, peers: peer || [peers] }
+ * @param {function} CB
+ * @param {Object} OPTIONS
  */
 
-module.exports = function(cb) {
+module.exports = function(CB, OPTIONS) {
+
+  var id = (OPTIONS && OPTIONS.id)? OPTIONS.id : UUIDv4().replace(/\//g, '').replace(/\-/g, '').replace(/\ /g, '').toLowerCase();
+  var BROADCAST_REPLY = `USERTOKEN/CHANNELS/${id}`;
+
+  var options = {
+    peers: (OPTIONS && OPTIONS.peers)? OPTIONS.peers : PEERS,
+    file: false
+  };
+  
+  var tokenEngine = Gun(options);
   tokenEngine.on('out', { get: { '#': { '*': '' } } });
 
-  // create new id chains to listen on
-  var id_Attributes = `${ID}/${ATTRIBUTES.HUB_ATTRIBUTES.toLowerCase()}`;
-  var id_Storage = `${ID}/${ATTRIBUTES.HUB_STORAGE.toLowerCase()}`;
-  var id_Channels = `${ID}/${ATTRIBUTES.HUB_CHANNELS.toLowerCase()}`;
-  
-  var attributes = tokenEngine.get(id_Attributes);
-  var storage = tokenEngine.get(id_Storage);
-  var channels = tokenEngine.get(id_Channels);
+  var broadcast = tokenEngine.get(BROADCAST);
+  var listen = tokenEngine.get(BROADCAST_REPLY);
 
-  // create new links
-  var rootLink = tokenEngine.get(ROOT);
-  var tokenGenesisLink = tokenEngine.get(HUB);
-  var attributesGenesisLink = tokenEngine.get(ATTRIBUTES.HUB_ATTRIBUTES);
-  var storageGenesisLink = tokenEngine.get(ATTRIBUTES.HUB_STORAGE);
-  var channelsGenesisLink = tokenEngine.get(ATTRIBUTES.HUB_CHANNELS);
+  // get genesis roots
+  var root = tokenEngine.get(ROOT);
+  var token = tokenEngine.get(id);
 
+  var tokenGenesis = tokenEngine.get(GENESIS);
+  var attributesGenesis = tokenEngine.get(GENESIS_ATTRIBUTES);
+  var contractsGenesis = tokenEngine.get(GENESIS_CONTRACTS);
+  var channelsGenesis = tokenEngine.get(GENESIS_CHANNELS);
 
-  // starts new root
-  rootLink.path(ROOT).set(tokenGenesisLink);
+  // starts new roots
+  root.path(ROOT).set(tokenGenesis);
+  root.path('ROOT').set(tokenGenesis);
+  root.path('ATTRIBUTES').set(attributesGenesis);
+  root.path('CONTRACTS').set(contractsGenesis);
+  root.path('ATTRIBUTES').set(attributesGenesis);
+  root.path('CHANNELS').set(channelsGenesis);
+  root.path('TOKEN').set(token);
 
-  // add new link root
-  tokenGenesisLink.path(HUB).set(token); // T0 <- TOKENS[T1, T2, ... Tn] // defines paths to Tn from T0
-  tokenGenesisLink.path(ROOT).set(rootLink);
-  attributesGenesisLink.path(ATTRIBUTES.HUB_ATTRIBUTES).set(attributes)
-  attributesGenesisLink.path(ROOT).set(rootLink);
-  storageGenesisLink.path(ATTRIBUTES.HUB_STORAGE).set(storage)
-  storageGenesisLink.path(ROOT).set(rootLink);
-  channelsGenesisLink.path(ATTRIBUTES.HUB_CHANNELS).set(channels)
-  channelsGenesisLink.path(ROOT).set(rootLink);
+  // link to root
+  tokenGenesis.path(ROOT).set(root);
+  tokenGenesis.path('ROOT').set(root);
+  tokenGenesis.path('ATTRIBUTES').set(attributesGenesis);
+  tokenGenesis.path('CONTRACTS').set(contractsGenesis);
+  tokenGenesis.path('ATTRIBUTES').set(attributesGenesis);
+  tokenGenesis.path('CHANNELS').set(channelsGenesis);
+  tokenGenesis.path('TOKEN').set(token);
 
-  // add links to form chains
-  attributes.path(ATTRIBUTES.HUB_ATTRIBUTES).set(attributesGenesisLink);
-  attributes.path(ROOT).set(rootLink);
-  storage.path(ATTRIBUTES.HUB_STORAGE).set(storageGenesisLink);
-  storage.path(ROOT).set(rootLink);
-  channels.path(ATTRIBUTES.HUB_CHANNELS).set(channelsGenesisLink);
-  channels.path(ROOT).set(rootLink);
+  attributesGenesis.path(ROOT).set(root);
+  attributesGenesis.path('ROOT').set(root);
+  attributesGenesis.path('TOKEN').set(token);
 
-  // add chains to token
-  token.get(ROOT).put(HUB);
-  token.get('id').put(ID);
-  token.get('seed').put(SEED);
-  token.path(ROOT).set(rootLink);
-  token.path(HUB).set(tokenGenesisLink); // Tn <- HUB[T0] // defines path to T0 from Tn
-  token.path(ATTRIBUTES.HUB_ATTRIBUTES).set(attributesGenesisLink); // Tn <- HUB_ATTRIBUTES[A0]  // defines path to A0
-  token.path(ATTRIBUTES.HUB_STORAGE).set(storageGenesisLink); // Tn <- HUB_STORAGE[S0]
-  token.path(ATTRIBUTES.HUB_CHANNELS).set(channelsGenesisLink); // Tn <- CHANNELS[C0]
+  contractsGenesis.path(ROOT).set(root);
+  contractsGenesis.path('ROOT').set(root);
+  contractsGenesis.path('TOKEN').set(token);
 
-  // Register seed
-  REQUESTS.get('REGISTER').put(ID)
-  RESPONSES.get('DOORKEY').on(function(doorkey){
-    token.get('doorkey').put(doorkey);
-    console.log('doorkey :',doorkey);
-  });
-  return cb({token: token, id: ID});
+  channelsGenesis.path(ROOT).set(root);
+  channelsGenesis.path('ROOT').set(root);
+  channelsGenesis.path('TOKEN').set(token);
+
+  token.get('ROOT').put(ROOT);
+  token.get('id').put(id);
+
+  // set paths
+  token.path(ROOT).set(root);
+  token.path('ROOT').set(root)
+  token.path('GENESIS').set(tokenGenesis);
+  token.path('ATTRIBUTES').set(attributesGenesis);
+  token.path('CONTRACTS').set(contractsGenesis);
+  token.path('CHANNELS').set(channelsGenesis);
+
+  CB({id: id, root: root, token: token, broadcast: broadcast, listen: listen});
 };

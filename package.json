@@ -1,7 +1,7 @@
 {
   "name": "token-memory",
-  "version": "0.1.8",
-  "description": "Durable memory as token module https://ut.usertoken.com/token-memory",
+  "version": "0.1.9",
+  "description": "Durable distributed memory token",
   "main": "index.js",
   "scripts": {
     "test": "npm run test:spec && npm run test:cat",

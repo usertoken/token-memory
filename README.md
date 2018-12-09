@@ -18,16 +18,16 @@ A small library that provides durable memories
   var Token = require("token-memory");
 
   function newToken() {
-    Token(({token, id}) => {
+    Token(({id, root, token, broadcast, listen}) => {
       token.get('id').once(idFound => {
-          console.log('id: ', id, ' idFound: ', idFound, ' online: ', id === idFound)
-          var testChain = token.get("TESTCHAIN").get('id');
-          testChain.put(id);
-          testChain.once((savedTokenID, indexKey) => {
-            console.log( '\n newToken() : ', savedTokenID, '\n KEY : ', indexKey, '\n SAVED : ', id === savedTokenID);
+        if ( id === idFound) {
+          broadcast.get('PING').put(id)
+          listen.get('PONG').on((peer) => {
+            console.log('PEER :', peer);
           });
+        }
       })
-    });
+    })
   }
 
   newToken();
