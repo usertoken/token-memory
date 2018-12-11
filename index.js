@@ -14,6 +14,7 @@ var ROOT_ATTRIBUTES = "ROOT/ATTRIBUTES";
 var ROOT_CONTRACTS = "ROOT/CONTRACTS";
 var ROOT_CHANNELS = "ROOT/CHANNELS";
 var GENESIS = 'GENESIS';
+var tokenPeers = [];
 
 /**
  * Create a new token or connect to existing by providing OPTIONS = { id: id, peers: peer || [peers] }
@@ -97,11 +98,16 @@ module.exports = function(CB, OPTIONS) {
   token.get('ROOT').put(ROOT);
   token.get('id').put(id);
 
-  broadcast.get('PING').put(id)
-  broadcast.get('PONG').on((peer) => {
-    if (peer === id) return
-    token.get('PEERS').put(peer);
-  });
 
+  token.get('PEERS').once((peer) => {
+    if (tokenPeers.indexOf(peer) === -1) {
+      broadcast.get('PING').put(id)
+      broadcast.get('PONG').on((peer) => {
+        if (peer === id) return
+        token.get('PEERS').put(peer);
+        tokenPeers.push(peer);
+      });
+    };
+  });
   CB({id: id, root: root, token: token, broadcast: broadcast, listen: listen});
 };
