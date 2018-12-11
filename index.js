@@ -28,7 +28,7 @@ module.exports = function(CB, OPTIONS) {
   var BROADCAST = "BROADCAST";
   var BROADCAST_REPLY = `${ROOT}/CHANNELS/${id}`;
 
-  var TOKEN_ATTRIBUTE = `${id}/attributes`;
+  var TOKEN_ATTRIBUTES = `${id}/attributes`;
   var TOKEN_CONTRACTS = `${id}/contracts`;
   var TOKEN_CHANNELS = `${id}/channels`;
 
@@ -36,7 +36,7 @@ module.exports = function(CB, OPTIONS) {
     peers: (OPTIONS && OPTIONS.peers)? OPTIONS.peers : SEEDS,
     file: false
   };
-  
+
   var genesis = Gun(options);
   genesis.on('out', { get: { '#': { '*': '' } } });
 
@@ -46,7 +46,7 @@ module.exports = function(CB, OPTIONS) {
 
   // genesis token
   var token = genesis.get(id);
-  var attributes = genesis.get(TOKEN_ATTRIBUTE);
+  var attributes = genesis.get(TOKEN_ATTRIBUTES);
   var contracts = genesis.get(TOKEN_CONTRACTS);
   var channels = genesis.get(TOKEN_CHANNELS);
 
@@ -64,13 +64,14 @@ module.exports = function(CB, OPTIONS) {
 
   // set paths
   token.path('ROOT').set(root);
+
   token.path('ATTRIBUTES').set(attributes);
   token.path('CONTRACTS').set(contracts);
   token.path('CHANNELS').set(channels);
 
   token.get('id').put(id);
   token.get('ID').put(id);
-  
+
   token.get('BROADCAST').put(BROADCAST);
   token.get('LISTEN').put(BROADCAST_REPLY);
 
@@ -80,6 +81,7 @@ module.exports = function(CB, OPTIONS) {
   token.get('CHANNELS').put(TOKEN_CHANNELS);
 
   token.get('PEERS').once((peer) => {
+    if (!peer) return
     Timer.mark(id);
     var newPeer = genesis.get(peer);
     if (tokenPeers.indexOf(peer) === -1) {
