@@ -1,6 +1,6 @@
 {
   "name": "token-memory",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Durable distributed memory token",
   "main": "index.js",
   "scripts": {
@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "gun": "0.9.99999",
+    "marky": "1.2.1",
     "uuid": "3.3.2"
   }
 }

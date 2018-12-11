@@ -1,19 +1,20 @@
 "use strict";
 
+var Timer = require('marky');
 var UUIDv4 = require('uuid/v4');
 var Gun = require('gun/gun');
-
 require('gun/nts');
 require('gun/lib/path.js');
 
 var SEEDS = ['https://troposphere.usertoken.com/gun', 'https://alex.us-east.mybluemix.net/gun', 'https://haley.mybluemix.net/gun'];
 var ID = UUIDv4().replace(/\//g, '').replace(/\-/g, '').replace(/\ /g, '').toLowerCase();
 
-var ROOT = "/";
-var ROOT_ATTRIBUTES = "ROOT/ATTRIBUTES";
-var ROOT_CONTRACTS = "ROOT/CONTRACTS";
-var ROOT_CHANNELS = "ROOT/CHANNELS";
-var GENESIS = 'GENESIS';
+var ROOT = "USERTOKEN";
+var ROOT_ATTRIBUTES = "USERTOKEN/ATTRIBUTES";
+var ROOT_CONTRACTS = "USERTOKEN/CONTRACTS";
+var ROOT_CHANNELS = "USERTOKEN/CHANNELS";
+
+
 var tokenPeers = [];
 
 /**
@@ -25,89 +26,73 @@ var tokenPeers = [];
 module.exports = function(CB, OPTIONS) {
   var id = (OPTIONS && OPTIONS.id)? OPTIONS.id : ID;
   var BROADCAST = "BROADCAST";
-  var BROADCAST_REPLY = `ROOT/CHANNELS/${id}`;
+  var BROADCAST_REPLY = `${ROOT}/CHANNELS/${id}`;
+
+  var TOKEN_ATTRIBUTE = `${id}/attributes`;
+  var TOKEN_CONTRACTS = `${id}/contracts`;
+  var TOKEN_CHANNELS = `${id}/channels`;
 
   var options = {
     peers: (OPTIONS && OPTIONS.peers)? OPTIONS.peers : SEEDS,
     file: false
   };
   
-  var tokenEngine = Gun(options);
-  tokenEngine.on('out', { get: { '#': { '*': '' } } });
+  var genesis = Gun(options);
+  genesis.on('out', { get: { '#': { '*': '' } } });
 
-  var broadcast = tokenEngine.get(BROADCAST);
-  var listen = tokenEngine.get(BROADCAST_REPLY);
+  // set up communication rootChannels
+  var broadcast = genesis.get(BROADCAST);
+  var listen = genesis.get(BROADCAST_REPLY);
 
-  // get genesis roots
-  var root = tokenEngine.get(ROOT);
-  var token = tokenEngine.get(id);
+  // genesis token
+  var token = genesis.get(id);
+  var attributes = genesis.get(TOKEN_ATTRIBUTE);
+  var contracts = genesis.get(TOKEN_CONTRACTS);
+  var channels = genesis.get(TOKEN_CHANNELS);
 
-  var tokenGenesis = tokenEngine.get(GENESIS);
-  var attributesGenesis = tokenEngine.get(ROOT_ATTRIBUTES);
-  var contractsGenesis = tokenEngine.get(ROOT_CONTRACTS);
-  var channelsGenesis = tokenEngine.get(ROOT_CHANNELS);
+  // genesis root
+  var root = genesis.get(ROOT);
+  var rootAttributes = genesis.get(ROOT_ATTRIBUTES);
+  var rootContracts = genesis.get(ROOT_CONTRACTS);
+  var rootChannels = genesis.get(ROOT_CHANNELS);
 
-  // starts new roots
-  root.path(ROOT).set(tokenGenesis);
-  root.path('ROOT').set(tokenGenesis);
-  root.path(GENESIS).set(tokenGenesis);
-  root.path('TOKEN').set(token);
-  
-  root.path('ATTRIBUTES').set(attributesGenesis);
-  root.path('CONTRACTS').set(contractsGenesis);
-  root.path('ATTRIBUTES').set(attributesGenesis);
-  root.path('CHANNELS').set(channelsGenesis);
-
-  // link to root
-  tokenGenesis.path(ROOT).set(root);
-  tokenGenesis.path('ROOT').set(root);
-  tokenGenesis.path(GENESIS).set(tokenGenesis);
-  tokenGenesis.path('TOKEN').set(token);
-
-  tokenGenesis.path('ATTRIBUTES').set(attributesGenesis);
-  tokenGenesis.path('CONTRACTS').set(contractsGenesis);
-  tokenGenesis.path('ATTRIBUTES').set(attributesGenesis);
-  tokenGenesis.path('CHANNELS').set(channelsGenesis);
-
-  attributesGenesis.path(ROOT).set(root);
-  attributesGenesis.path('ROOT').set(root);
-  attributesGenesis.path(GENESIS).set(tokenGenesis);
-  attributesGenesis.path('TOKEN').set(token);
-
-  contractsGenesis.path(ROOT).set(root);
-  contractsGenesis.path('ROOT').set(root);
-  contractsGenesis.path(GENESIS).set(tokenGenesis);
-  contractsGenesis.path('TOKEN').set(token);
-
-  channelsGenesis.path(ROOT).set(root);
-  channelsGenesis.path('ROOT').set(root);
-  channelsGenesis.path(GENESIS).set(tokenGenesis);
-  channelsGenesis.path('TOKEN').set(token);
+  // root paths
+  root.path('TOKENS').set(token);
+  root.path('ATTRIBUTES').set(rootAttributes);
+  root.path('CONTRACTS').set(rootContracts);
+  root.path('CHANNELS').set(rootChannels);
 
   // set paths
-  token.path(ROOT).set(root);
-  token.path('ROOT').set(root)
-  token.path(GENESIS).set(tokenGenesis);
+  token.path('ROOT').set(root);
+  token.path('ATTRIBUTES').set(attributes);
+  token.path('CONTRACTS').set(contracts);
+  token.path('CHANNELS').set(channels);
 
-  token.path('ATTRIBUTES').set(attributesGenesis);
-  token.path('CONTRACTS').set(contractsGenesis);
-  token.path('CHANNELS').set(channelsGenesis);
-
+  token.get('id').put(id);
+  token.get('ID').put(id);
+  
   token.get('BROADCAST').put(BROADCAST);
   token.get('LISTEN').put(BROADCAST_REPLY);
-  token.get('ROOT').put(ROOT);
-  token.get('id').put(id);
 
+  token.get('ROOT').put(ROOT);
+  token.get('ATTRIBUTES').put(TOKEN_ATTRIBUTES);
+  token.get('CONTRACTS').put(TOKEN_CONTRACTS);
+  token.get('CHANNELS').put(TOKEN_CHANNELS);
 
   token.get('PEERS').once((peer) => {
+    Timer.mark(id);
+    var newPeer = genesis.get(peer);
     if (tokenPeers.indexOf(peer) === -1) {
-      broadcast.get('PING').put(id)
+      broadcast.get('PING').put(id);
       broadcast.get('PONG').on((peer) => {
-        if (peer === id) return
+        if (peer === id || tokenPeers.indexOf(peer) === -1) return;
+        token.path('PEERS').set(newpeer);
         token.get('PEERS').put(peer);
         tokenPeers.push(peer);
       });
+      var stats = Timer.stop(id);
+      newPeer.get('STATS').put(JSON.stringify(stats));
     };
   });
-  CB({id: id, root: root, token: token, broadcast: broadcast, listen: listen});
+  CB({id: id, token: token, genesis: genesis, broadcast: broadcast, listen: listen});
 };
