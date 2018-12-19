@@ -2,7 +2,7 @@
 
 var Timer = require('marky');
 var UUIDv4 = require('uuid/v4');
-var Gun = require('gun/gun');
+var Gun = require('gun');
 require('gun/nts');
 require('gun/lib/path.js');
 
@@ -18,24 +18,33 @@ var ROOT_CHANNELS = "USERTOKEN/CHANNELS";
 var tokenPeers = [];
 
 /**
- * Create a new token or connect to existing by providing OPTIONS = { id: id, peers: peer || [peers] }
- * @param {function} CB
+ * Create a new token or connect to existing by providing OPTIONS = { 
+ *   id: String, 
+ *   peers: [URL], 
+ *   server: express/http instance
+ *  }
+ * 
+ * @param {Function} CB
  * @param {Object} OPTIONS
  */
 
 module.exports = function(CB, OPTIONS) {
   var id = (OPTIONS && OPTIONS.id)? OPTIONS.id : ID;
+  var server = (OPTIONS && OPTIONS.server)? OPTIONS.server : null;
+
+  var options = {
+    peers: (OPTIONS && OPTIONS.peers)? OPTIONS.peers : SEEDS,
+    file: (OPTIONS && OPTIONS.server)? ROOT : false
+  };
+
+  if (server) options.server = server;
+
   var BROADCAST = "BROADCAST";
   var BROADCAST_REPLY = `${ROOT}/CHANNELS/${id}`;
 
   var TOKEN_ATTRIBUTES = `${id}/attributes`;
   var TOKEN_CONTRACTS = `${id}/contracts`;
   var TOKEN_CHANNELS = `${id}/channels`;
-
-  var options = {
-    peers: (OPTIONS && OPTIONS.peers)? OPTIONS.peers : SEEDS,
-    file: false
-  };
 
   var genesis = Gun(options);
   genesis.on('out', { get: { '#': { '*': '' } } });

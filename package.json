@@ -1,6 +1,6 @@
 {
   "name": "token-memory",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Durable distributed memory token",
   "main": "index.js",
   "scripts": {
